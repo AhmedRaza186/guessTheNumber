@@ -48,15 +48,17 @@ main {
     margin-top: 25px;
 }
 
-main h1 {
+main h1,h3 {
     justify-self: center;
+}
+main h3{
+    margin-top: 25px;
 }
 
 .guessShowArea {
     position: relative;
     width: 100%;
     height: 200px;
-    margin-top: 25px;
     display: flex;
     align-items: center;
     /* flex-direction: column; */
@@ -86,7 +88,7 @@ main h1 {
 
 .userArea {
     width: 50%;
-    margin-top: 100px;
+    margin-top: 50px;
     display: flex;
     justify-content: space-between;
     justify-self: center;
@@ -211,7 +213,7 @@ main h1 {
         bottom: 45px;
     }
 
-    .highScore {
+    .totalScore {
         position: relative;
         right: 53px;
         top: 200px;
