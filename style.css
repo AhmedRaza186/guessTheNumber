@@ -22,6 +22,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    cursor: url("./cursor.png"), auto;
 }
 
 header {
@@ -103,7 +104,7 @@ main h3 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 25px;
+    gap: 20px;
 }
 
 .guessArea input {
@@ -174,7 +175,8 @@ main h3 {
     justify-content: center;
     gap: 30px;
 }
-.winModal h3{
+
+.winModal h3 {
     margin-top: 25px;
 }
 
@@ -220,7 +222,8 @@ hr {
     .userArea {
         width: 80%;
     }
-    .winModal{
+
+    .winModal {
         width: 80%;
     }
 }
@@ -282,7 +285,8 @@ hr {
     .scoreArea p {
         font-size: 1rem;
     }
-    .winModal{
+
+    .winModal {
         width: 100%;
     }
 }

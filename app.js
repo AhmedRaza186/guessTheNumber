@@ -3,12 +3,16 @@ let bgSound = new Audio('./background.mp3')
 let newRound = new Audio('./newround.mp3')
 let winGame = new Audio('./wingame.mp3')
 let winRound = new Audio('./winround.mp3')
+let errorSound = new Audio('./error.mp3')
+let buttonClicked = new Audio('./buttonclicked.mp3')
 
 let winModal = document.querySelector('#winModal')
 let modalRound = document.querySelector('#modalNextRound')
 
 
 bgSound.play()
+bgSound.loop = true
+
 
 let num;
 function generateNum() {
@@ -40,12 +44,14 @@ let turnDisplay = document.querySelector('.turns')
 let scoreMultipler = 0
 
 let round = 0
+let score = 0
+let scoreDisplay = document.querySelector('.score')
 let roundDisplay = document.querySelector('#rounds')
 function roundChecker() {
+    round++
     winModal.style.zIndex = '-1'
     winModal.style.opacity = '0'
     newRound.play()
-    round++
     if (round <= 2) {
         scoreMultipler = 2
         turns = 10
@@ -70,13 +76,13 @@ function roundChecker() {
     roundDisplay.innerText = `Round ${round}`
     userGuessDisplay.innerText = `?`
     guessingStatus.innerText = 'Start Guessing....'
+    turnDisplay.innerText = `Remaining Turns :${turns}`
+scoreDisplay.innerText = 'Score :0'
 
 
 }
 roundChecker()
-let scoreDisplay = document.querySelector('.score')
 
-let score = 0
 function scoreChecker(turns) {
     score = turns * scoreMultipler
     console.log(scoreMultipler, '===> multiplyer')
@@ -91,28 +97,46 @@ function totalScoreHandler() {
     totalScore += score
     totalScoreDisplay.innerText = `Total Score :${Math.round(totalScore)}`
 }
+let input = document.querySelector('input')
+let checkBtn = document.querySelector('.check')
 
+document.querySelector('body').addEventListener('keypress', (e) => {
+    if (e.key == 'Enter') {
+        input.focus()
+    }
+})
 
-document.querySelector('.check').addEventListener('click', checkNum)
+checkBtn.addEventListener('click', checkNum)
+input.addEventListener('keypress', (e) => {
+    if (e.key == 'Enter') {
+        checkBtn.click()
+    }
+})
 
 function checkNum() {
-    let input = document.querySelector('input')
+
     let userGuess = +(input.value)
     if (!Number(userGuess)) {
-        alert(`Only Numbers allowed`)
+        let error = document.querySelector('.notNum')
+        errorSound.play()
+        error.style.display = 'block'
+        setTimeout(() => {
+            error.style.display = 'none'
+
+        }, 2000)
         return
     }
+    buttonClicked.play()
     userGuessDisplay.innerText = userGuess
     input.value = ''
     turns--
     if (userGuess == num) {
         if (round == 10) {
             winGame.play()
-            winModal.firstElementChild.innerText = 'You Won the Game'
+            winModal.querySelector('h3').innerText = 'You Won the Game'
             winModal.style.zIndex = '10'
             winModal.style.opacity = '1'
             modalRound.style.display = 'none'
-
             return
         }
         winRound.play()
@@ -120,12 +144,14 @@ function checkNum() {
         winModal.style.opacity = '1'
         generateNum()
         scoreChecker(turns + 1)
+        let roundScore = document.querySelectorAll('.winScore h4')[0]
+        roundScore.innerText = `Score :${Math.round(score)}`
         totalScoreHandler()
+        let allRoundScore = document.querySelectorAll('.winScore h4')[1]
+        allRoundScore.innerText = `Total Score :${Math.round(totalScore)}`
         // roundChecker()
         console.log(turns)
-        userGuessDisplay.innerText = `?`
-        guessingStatus.innerText = 'Start Guessing....'
-        turnDisplay.innerText = `Remaining Turns :${turns}`
+    
         return
 
     }
