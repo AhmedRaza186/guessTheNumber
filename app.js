@@ -1,13 +1,14 @@
-let loseSound = new Audio('./gameover.mp3')
-let bgSound = new Audio('./background.mp3')
-let newRound = new Audio('./newround.mp3')
-let winGame = new Audio('./wingame.mp3')
-let winRound = new Audio('./winround.mp3')
-let errorSound = new Audio('./error.mp3')
-let buttonClicked = new Audio('./buttonclicked.mp3')
+let loseSound = new Audio('./sounds/gameover.mp3')
+let bgSound = new Audio('./sounds/background.mp3')
+let newRound = new Audio('./sounds/newround.mp3')
+let winGame = new Audio('./sounds/wingame.mp3')
+let winRound = new Audio('./sounds/winround.mp3')
+let errorSound = new Audio('./sounds/error.mp3')
+let buttonClicked = new Audio('./sounds/buttonclicked.mp3')
 
 let winModal = document.querySelector('#winModal')
 let modalRound = document.querySelector('#modalNextRound')
+let modalNewGame = document.querySelector('#modalNewGame')
 
 
 bgSound.play()
@@ -17,7 +18,7 @@ bgSound.loop = true
 let num;
 function generateNum() {
     num = Math.ceil(Math.random() * 20)
-    console.log(num, '===> num')
+
 }
 
 generateNum()
@@ -26,7 +27,7 @@ document.querySelector('.again').addEventListener('click', () => {
     window.location.reload()
 })
 modalRound.addEventListener('click', roundChecker)
-document.querySelector('#modalNewGame').addEventListener('click', () => {
+modalNewGame.addEventListener('click', () => {
     winModal.style.zIndex = '-1'
     winModal.style.opacity = '0'
     setTimeout(() => {
@@ -48,10 +49,12 @@ let score = 0
 let scoreDisplay = document.querySelector('.score')
 let roundDisplay = document.querySelector('#rounds')
 function roundChecker() {
-    round++
     winModal.style.zIndex = '-1'
     winModal.style.opacity = '0'
+           modalNewGame.style.display = 'none'
+           modalRound.style.display = 'none'
     newRound.play()
+    round++
     if (round <= 2) {
         scoreMultipler = 2
         turns = 10
@@ -85,9 +88,6 @@ roundChecker()
 
 function scoreChecker(turns) {
     score = turns * scoreMultipler
-    console.log(scoreMultipler, '===> multiplyer')
-    console.log(turns, '===> scoreCheckerturn')
-    console.log(score, '===> score')
     scoreDisplay.innerText = `Score :${Math.round(score)}`
 }
 let totalScore = 0
@@ -98,13 +98,13 @@ function totalScoreHandler() {
     totalScoreDisplay.innerText = `Total Score :${Math.round(totalScore)}`
 }
 let input = document.querySelector('input')
-let checkBtn = document.querySelector('.check')
-
 document.querySelector('body').addEventListener('keypress', (e) => {
     if (e.key == 'Enter') {
         input.focus()
     }
 })
+
+let checkBtn = document.querySelector('.check')
 
 checkBtn.addEventListener('click', checkNum)
 input.addEventListener('keypress', (e) => {
@@ -116,7 +116,17 @@ input.addEventListener('keypress', (e) => {
 function checkNum() {
 
     let userGuess = +(input.value)
-    if (!Number(userGuess)) {
+    if (isNaN(userGuess)) {
+        let error = document.querySelector('.notNum')
+        errorSound.play()
+        error.style.display = 'block'
+        setTimeout(() => {
+            error.style.display = 'none'
+
+        }, 2000)
+        return
+    }
+    if (userGuess == '') {
         let error = document.querySelector('.notNum')
         errorSound.play()
         error.style.display = 'block'
@@ -136,12 +146,14 @@ function checkNum() {
             winModal.querySelector('h3').innerText = 'You Won the Game'
             winModal.style.zIndex = '10'
             winModal.style.opacity = '1'
-            modalRound.style.display = 'none'
+                   modalNewGame.style.display = 'block'
             return
         }
         winRound.play()
         winModal.style.zIndex = '10'
         winModal.style.opacity = '1'
+        modalRound.style.display = 'block'
+        modalNewGame.style.display = 'block'
         generateNum()
         scoreChecker(turns + 1)
         let roundScore = document.querySelectorAll('.winScore h4')[0]
@@ -150,24 +162,25 @@ function checkNum() {
         let allRoundScore = document.querySelectorAll('.winScore h4')[1]
         allRoundScore.innerText = `Total Score :${Math.round(totalScore)}`
         // roundChecker()
-        console.log(turns)
-    
         return
 
     }
 
-    console.log(turns, '===> turn')
+
     turnDisplay.innerText = `Remaining Turns :${turns}`
-    console.log(turnDisplay, '===> turn display')
+
     if (turns < 1) {
         loseSound.play()
-        setTimeout(() => {
-            alert('You lose')
-        }, 1000)
+   winModal.querySelector('h3').innerText = 'Game Over'
+            winModal.style.zIndex = '10'
+            winModal.style.opacity = '1'
+              modalNewGame.style.display = 'block'
+              let roundScore = document.querySelectorAll('.winScore h4')[0]
+        roundScore.innerText = `Score :0`
+        let allRoundScore = document.querySelectorAll('.winScore h4')[1]
+        allRoundScore.innerText = `Total Score :${Math.round(totalScore)}`
         generateNum()
         round = 1
-
-
 
     }
 
